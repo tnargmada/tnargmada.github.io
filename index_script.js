@@ -18,18 +18,6 @@ var currentHeight = wrapper.clientHeight;
 var square = new Square(wrapper, 150 + wrapper.clientWidth / 5, "#e83544", engine);
 var circle = new Circle(wrapper, 150 + wrapper.clientWidth / 5, "#356ee8", engine);
 
-// create a renderer
-var render = Matter.Render.create({
-    element: wrapper,
-    engine: engine,
-    options: {
-        width: wrapper.clientWidth,
-        height: wrapper.clientHeight,
-        wireframes: false,
-        background: '#ffffff00'
-    }
-});
-
 // initialize variables to reference objects we'll need
 var ground, leftWall, rightWall;
 
@@ -57,22 +45,9 @@ function initializeWalls() {
 initializeWalls();
 
 // add mouse control
-var mouse = Matter.Mouse.create(render.canvas),
 mouseConstraint = Matter.MouseConstraint.create(engine, { element: wrapper });
 
 Matter.Composite.add(engine.world, mouseConstraint);
-
-// keep the mouse in sync with rendering
-render.mouse = mouse;
-
-// run the renderer
-// Render.run(render);
-(function render() {
-    window.requestAnimationFrame(render);
-    // update shapes based on engine values
-    square.updateElem();
-    circle.updateElem();
-})();
 
 // create runner
 var runner = Matter.Runner.create();
@@ -80,17 +55,19 @@ var runner = Matter.Runner.create();
 // run the engine
 Matter.Runner.run(runner, engine);
 
+// render
+(function render() {
+    window.requestAnimationFrame(render);
+    // update shapes based on engine values
+    square.updateElem();
+    circle.updateElem();
+})();
+
 function handleResize() {
     widthRatio = wrapper.clientWidth / currentWidth;
     heightRatio = wrapper.clientHeight / currentHeight;
     currentWidth = wrapper.clientWidth;
     currentHeight = wrapper.clientHeight;
-    render.bounds.max.x = wrapper.clientWidth;
-    render.bounds.max.y = wrapper.clientHeight;
-    render.options.width = wrapper.clientWidth;
-    render.options.height = wrapper.clientHeight;
-    render.canvas.width = wrapper.clientWidth;
-    render.canvas.height = wrapper.clientHeight;
     Matter.Body.setPosition(
         ground,
         Matter.Vector.create(
