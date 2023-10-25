@@ -1,18 +1,18 @@
 class Square {
-    constructor(parentElem, width, color, matterEngine) {
+    constructor(element, parentElem, widthMin, widthScale, matterEngine) {
         this.parentElem = parentElem;
-        this.width = width;
+        this.widthMin = widthMin;
+        this.widthScale = widthScale;
+        this.width = this.widthMin + this.widthScale * this.parentElem.clientWidth;
         this.matterEngine = matterEngine;
-        // initialize DOM element
-        this.element = document.createElement("div");
-        parentElem.appendChild(this.element);
+        this.element = element;
         // style DOM element
         this.element.style.width = `${this.width}px`;
         this.element.style.height = `${this.width}px`;
-        this.element.style.backgroundColor = color;
         this.element.style.position = "absolute";
+        this.element.style.fontSize = `${this.width / 8}px`
         // initialize matter.js body
-        this.body = Matter.Bodies.rectangle(0.5 * parentElem.clientWidth, width * -1.8, width, width);
+        this.body = Matter.Bodies.rectangle(0.5 * parentElem.clientWidth, this.width * -1.8, this.width, this.width);
         // add matter.js body to matter.js world
         Matter.Composite.add(this.matterEngine.world, this.body);
     }
@@ -24,25 +24,34 @@ class Square {
         this.element.style.width = `${this.width}px`;
         this.element.style.height = `${this.width}px`;
         this.element.style.transform = `rotate(${this.body.angle}rad)`;
+    }
+    // method to handle window resize
+    // change this.width, and scale matter.js body by (new width / old width)
+    handleResize() {
+        var newWidth = this.widthMin + this.widthScale * this.parentElem.clientWidth;
+        Matter.Body.scale(this.body, newWidth / this.width, newWidth / this.width);
+        this.width = newWidth;
+        // change font size
+        this.element.style.fontSize = `${this.width / 8}px`
     }
 }
 
 class Circle {
-    constructor(parentElem, width, color, matterEngine) {
+    constructor(element, parentElem, widthMin, widthScale, matterEngine) {
         this.parentElem = parentElem;
-        this.width = width;
+        this.widthMin = widthMin;
+        this.widthScale = widthScale;
+        this.width = this.widthMin + this.widthScale * this.parentElem.clientWidth;
         this.matterEngine = matterEngine;
-        // initialize DOM element
-        this.element = document.createElement("div");
-        parentElem.appendChild(this.element);
+        this.element = element;
         // style DOM element
         this.element.style.width = `${this.width}px`;
         this.element.style.height = `${this.width}px`;
-        this.element.style.backgroundColor = color;
         this.element.style.position = "absolute";
         this.element.style.borderRadius = "50%";
+        this.element.style.fontSize = `${this.width / 8}px`
         // initialize matter.js body
-        this.body = Matter.Bodies.circle(0.2 * parentElem.clientWidth, width * -1.8, width / 2);
+        this.body = Matter.Bodies.circle(0.2 * parentElem.clientWidth, this.width * -1.8, this.width / 2);
         // add matter.js body to matter.js world
         Matter.Composite.add(this.matterEngine.world, this.body);
     }
@@ -55,4 +64,55 @@ class Circle {
         this.element.style.height = `${this.width}px`;
         this.element.style.transform = `rotate(${this.body.angle}rad)`;
     }
+    // method to handle window resize
+    // change this.width, and scale matter.js body by (new width / old width)
+    handleResize() {
+        var newWidth = this.widthMin + this.widthScale * this.parentElem.clientWidth;
+        Matter.Body.scale(this.body, newWidth / this.width, newWidth / this.width);
+        this.width = newWidth;
+        // change font size
+        this.element.style.fontSize = `${this.width / 8}px`
+    }
 }
+
+// class Triangle {
+//     constructor(element, parentElem, widthMin, widthScale, matterEngine) {
+//         this.parentElem = parentElem;
+//         this.widthMin = widthMin;
+//         this.widthScale = widthScale;
+//         this.width = this.widthMin + this.widthScale * this.parentElem.clientWidth;
+//         this.matterEngine = matterEngine;
+//         this.element = element;
+//         // style DOM element
+//         this.element.style.borderRight = `${this.width / 2}px solid transparent`;
+//         this.element.style.borderLeft = `${this.width / 2}px solid transparent`;
+//         this.element.style.borderBottom = `${this.width * 2 / 3}px solid red`;
+//         this.element.style.borderTop = "0px solid transparent";
+//         this.element.style.position = "absolute";
+//         this.element.style.fontSize = `${this.width / 8}px`
+//         // initialize matter.js body
+//         this.body = Matter.Bodies.polygon(0.8 * parentElem.clientWidth, this.width * -1.8, 3, this.width * 2 / 3);
+//         // add matter.js body to matter.js world
+//         Matter.Composite.add(this.matterEngine.world, this.body);
+//     }
+//     // method to update DOM element based on matter.js engine, for rendering
+//     updateElem() {
+//         // set position, size, and rotation
+//         this.element.style.top = `${this.body.position.y}px`;
+//         this.element.style.left = `${this.body.position.x}px`;
+//         this.element.style.borderRight = `${this.width / 2}px solid transparent`;
+//         this.element.style.borderLeft = `${this.width / 2}px solid transparent`;
+//         this.element.style.borderBottom = `${this.width * Math.sqrt(3) / 2}px solid yellow`;
+//         this.element.style.borderTop = "0px solid transparent";
+//         //this.element.style.transform = `rotate(${this.body.angle + Math.PI / 6}rad)`;
+//     }
+//     // method to handle window resize
+//     // change this.width, and scale matter.js body by (new width / old width)
+//     handleResize() {
+//         var newWidth = this.widthMin + this.widthScale * this.parentElem.clientWidth;
+//         Matter.Body.scale(this.body, newWidth / this.width, newWidth / this.width);
+//         this.width = newWidth;
+//         // change font size
+//         this.element.style.fontSize = `${this.width / 8}px`
+//     }
+// }

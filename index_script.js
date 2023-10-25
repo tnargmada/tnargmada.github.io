@@ -8,13 +8,12 @@ var startDragTime;
 var engine = Matter.Engine.create();
 // get wrapper element (element which will contain shapes & walls)
 var wrapper = document.getElementById("wrap");
-// also get current wrapper width & height
+// also get current wrapper width (so we can keep track when window resizes)
 var currentWidth = wrapper.clientWidth;
-var currentHeight = wrapper.clientHeight;
 
 // create shapes
-var square = new Square(wrapper, 150 + wrapper.clientWidth / 5, "#e83544", engine);
-var circle = new Circle(wrapper, 150 + wrapper.clientWidth / 5, "#356ee8", engine);
+var square = new Square(document.getElementById("square"), wrapper, 150, 0.2, engine);
+var circle = new Circle(document.getElementById("circle"), wrapper, 150, 0.2, engine);
 // create walls
 var walls = new Walls(wrapper, WALL_THICKNESS, WALL_OVERLAP, WALL_HEIGHT, engine);
 
@@ -35,50 +34,27 @@ Matter.Runner.run(runner, engine);
 // handle resize (change shape and walls to match new window size)
 function handleResize() {
     widthRatio = wrapper.clientWidth / currentWidth;
-    heightRatio = wrapper.clientHeight / currentHeight;
     currentWidth = wrapper.clientWidth;
-    currentHeight = wrapper.clientHeight;
-    Matter.Body.setPosition(
-        ground,
-        Matter.Vector.create(
-            wrapper.clientWidth / 2,
-            wrapper.clientHeight + WALL_SIZE / 2
-        )
-    );
-    Matter.Body.scale(ground, widthRatio, 1);
-    Matter.Body.setPosition(
-        rightWall,
-        Matter.Vector.create(
-            wrapper.clientWidth + WALL_SIZE / 2,
-            wrapper.clientHeight / 2
-        )
-    );
-    Matter.Body.scale(rightWall, 1, heightRatio);
-    Matter.Body.setPosition(
-        leftWall,
-        Matter.Vector.create(
-            WALL_SIZE / -2,
-            wrapper.clientHeight / 2
-        )
-    );
-    Matter.Body.scale(leftWall, 1, heightRatio);
+    square.handleResize();
+    circle.handleResize();
+    walls.handleResize(widthRatio);
 }
 window.addEventListener("resize", handleResize);
 
 // handle navigation to the other pages (if click, not drag, then navigate)
-Matter.Events.on(mouseConstraint, "startdrag", () => {
+square.element.addEventListener("mousedown", () => {
     startDragTime = Date.now();
-})
-Matter.Events.on(mouseConstraint, "enddrag", (event) => {
-    endDragTime = Date.now();
-    if (endDragTime - startDragTime < 200) {
-        if (event.body.id == 1) {
-            // clicked on right square
-            window.location.href = 'page1.html'
-        }
-        if (event.body.id == 2) {
-            // clicked on left square
-            window.location.href = 'page2.html'
-        }
+});
+circle.element.addEventListener("mousedown", () => {
+    startDragTime = Date.now();
+});
+square.element.addEventListener("mouseup", () => {
+    if (Date.now() - startDragTime < 200) {
+        window.location.href = 'exploration.html';
     }
-})
+});
+circle.element.addEventListener("mouseup", () => {
+    if (Date.now() - startDragTime < 200) {
+        window.location.href = 'projects.html';
+    }
+});
