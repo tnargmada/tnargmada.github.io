@@ -51,10 +51,10 @@ function handleResize() {
 window.addEventListener("resize", handleResize);
 
 // handle navigation to the other pages (if click, not drag, then navigate)
-backSquare.element.addEventListener("mousedown", () => {
+backSquare.element.addEventListener("pointerdown", () => {
     startDragTime = Date.now();
 });
-backSquare.element.addEventListener("mouseup", () => {
+backSquare.element.addEventListener("pointerup", () => {
     if (Date.now() - startDragTime < 200) {
         window.location.href = 'index.html';
     }
