@@ -42,18 +42,18 @@ function handleResize() {
 window.addEventListener("resize", handleResize);
 
 // handle navigation to the other pages (if click, not drag, then navigate)
-square.element.addEventListener("mousedown", () => {
+square.element.addEventListener("pointerdown", () => {
     startDragTime = Date.now();
 });
-circle.element.addEventListener("mousedown", () => {
+circle.element.addEventListener("pointerdown", () => {
     startDragTime = Date.now();
 });
-square.element.addEventListener("mouseup", () => {
+square.element.addEventListener("pointerup", () => {
     if (Date.now() - startDragTime < 200) {
         window.location.href = 'exploration.html';
     }
 });
-circle.element.addEventListener("mouseup", () => {
+circle.element.addEventListener("pointerup", () => {
     if (Date.now() - startDragTime < 200) {
         window.location.href = 'projects.html';
     }

@@ -79,10 +79,10 @@ document.querySelectorAll(".popup_wrap").forEach((popup) => {
 });
 // handle opening
 function addOpeningFunction(shapeElem, popupId) {
-    shapeElem.element.addEventListener("mousedown", () => {
+    shapeElem.element.addEventListener("pointerdown", () => {
         startDragTime = Date.now();
     });
-    shapeElem.element.addEventListener("mouseup", () => {
+    shapeElem.element.addEventListener("pointerup", () => {
         if (Date.now() - startDragTime < 200) {
             document.getElementById(popupId).style.visibility = "visible";
         }
