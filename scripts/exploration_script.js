@@ -2,6 +2,12 @@
 const WALL_THICKNESS = 10000;
 const WALL_OVERLAP = 5000;
 const WALL_HEIGHT = 100000;
+// define the line between small and big width (to determine if shapes fall stacked or not)
+const WIDTH_THRESHOLD = 800;
+// define shape sizes
+// (shapes will have width of SHAPE_MIN_WIDTH + SHAPE_WIDTH_SCALE * wrapper.clientWidth)
+const SHAPE_MIN_WIDTH = 80;
+const SHAPE_WIDTH_SCALE = 0.2;
 // use this variable to distinguish a "drag" from a "click"
 var startDragTime;
 // create an matter.js engine
@@ -11,12 +17,24 @@ var wrapper = document.getElementById("wrap");
 // also get current wrapper width (so we can keep track when window resizes)
 var currentWidth = wrapper.clientWidth;
 
+if (wrapper.clientWidth <= WIDTH_THRESHOLD) {
+    // if small screen, lower gravity
+    engine.gravity.scale = 0.0006;
+}
+// function to randomize positions
+function randomX() {
+    return Math.random() * wrapper.clientWidth;
+}
+function randomY() {
+    // change this
+    return -1 * (wrapper.clientHeight + Math.random() * wrapper.clientHeight);
+}
 // create shapes (explorations)
-var eelSquare = new Square(document.getElementById("eel"), wrapper, 150, 0.2, engine);
-var clicksSquare = new Square(document.getElementById("clicks"), wrapper, 150, 0.2, engine);
-var clockSquare = new Square(document.getElementById("clock"), wrapper, 150, 0.2, engine);
-var tugofwarSquare = new Square(document.getElementById("tugofwar"), wrapper, 150, 0.2, engine);
-var backSquare = new Square(document.getElementById("back"), wrapper, 150 * 0.6, 0.2 * 0.6, engine);
+var eelSquare = new Square(document.getElementById("eel"), wrapper, SHAPE_MIN_WIDTH, SHAPE_WIDTH_SCALE, engine, randomX(), randomY());
+var clicksSquare = new Square(document.getElementById("clicks"), wrapper, SHAPE_MIN_WIDTH, SHAPE_WIDTH_SCALE, engine, randomX(), randomY());
+var clockSquare = new Square(document.getElementById("clock"), wrapper, SHAPE_MIN_WIDTH, SHAPE_WIDTH_SCALE, engine, randomX(), randomY());
+var tugofwarSquare = new Square(document.getElementById("tugofwar"), wrapper, SHAPE_MIN_WIDTH, SHAPE_WIDTH_SCALE, engine, randomX(), randomY());
+var backSquare = new Square(document.getElementById("back"), wrapper, SHAPE_MIN_WIDTH * 0.7, SHAPE_WIDTH_SCALE * 0.7, engine, wrapper.clientWidth / 4, wrapper.clientHeight / -2);
 // create walls
 var walls = new Walls(wrapper, WALL_THICKNESS, WALL_OVERLAP, WALL_HEIGHT, engine);
 

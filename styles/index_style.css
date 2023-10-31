@@ -22,11 +22,36 @@ body, html {
 }
 
 #intro {
-    font-size: 120px;
+    text-align: center;
+    font-size: 48px;
     font-family: MyHelvetica, sans-serif;
     margin: 0px;
-    margin-left: 80px;
-    margin-top: 80px;
+    margin-top: 30px;
+    margin-left: 15px;
+    margin-right: 15px;
+    user-select: none;
+}
+/* mid size: */
+@media only screen and (min-width: 600px) {
+    #intro {
+        text-align: center;
+        font-size: 72px;
+        font-family: MyHelvetica, sans-serif;
+        margin: 0px;
+        margin-top: 30px;
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+}
+/* desktop size: */
+@media only screen and (min-width: 1000px) {
+    #intro {
+        text-align: left;
+        font-size: 120px;
+        font-family: MyHelvetica, sans-serif;
+        margin: 100px;
+        margin-top: 70px;
+    }
 }
 
 .shape_text {
@@ -45,7 +70,7 @@ body, html {
     color: #8c121c;
 }
 #square:hover {
-    color: #310509;
+    color: #49080e;
 }
 
 #circle {
@@ -55,4 +80,19 @@ body, html {
 }
 #circle:hover {
     color: #0a183f;
+}
+
+#triangle {
+    cursor: pointer;
+    color: #8e6100;
+}
+#triangle:hover {
+    color: #593501;
+}
+#triangle img {
+    position: absolute;
+    height: 100%;
+    left: 50%;
+    transform: translate(-50%, -16.667%);
+    user-select: none;
 }
