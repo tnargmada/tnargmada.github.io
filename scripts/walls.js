@@ -11,6 +11,12 @@ class Walls {
             this.parentElem.clientWidth + this.overlap * 2, this.thickness,
             { isStatic: true }
         );
+        // ceiling is at height / 2
+        this.ceiling = Matter.Bodies.rectangle(
+            this.parentElem.clientWidth / 2, -1 * (this.height / 2 + this.thickness / 2),
+            this.parentElem.clientWidth + this.overlap * 2, this.thickness,
+            { isStatic: true }
+        );
         this.rightWall = Matter.Bodies.rectangle(
             this.parentElem.clientWidth + this.thickness / 2, this.parentElem.clientHeight / 2,
             this.thickness, this.parentElem.clientHeight + this.overlap * 2 + this.height * 2,
@@ -22,7 +28,7 @@ class Walls {
             { isStatic: true }
         );
         // add to world
-        Matter.Composite.add(this.matterEngine.world, [this.ground, this.rightWall, this.leftWall]);
+        Matter.Composite.add(this.matterEngine.world, [this.ground, this.ceiling, this.rightWall, this.leftWall]);
     }
     // method to handle window resize
     // scale matter.js body by ratio (new width / old width), and change its position
@@ -35,6 +41,14 @@ class Walls {
             )
         );
         Matter.Body.scale(this.ground, widthRatio, 1);
+        Matter.Body.setPosition(
+            this.ceiling,
+            Matter.Vector.create(
+                this.parentElem.clientWidth / 2,
+                -1 * (this.height / 2 + this.thickness / 2)
+            )
+        );
+        Matter.Body.scale(this.ceiling, widthRatio, 1);
         Matter.Body.setPosition(
             this.rightWall,
             Matter.Vector.create(

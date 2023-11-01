@@ -1,7 +1,7 @@
 // define walls/ground size
 const WALL_THICKNESS = 10000;
 const WALL_OVERLAP = 5000;
-const WALL_HEIGHT = 100000;
+const WALL_HEIGHT = 10000;
 // define the line between small and big width (to determine if shapes fall stacked or not)
 const WIDTH_THRESHOLD = 800;
 // define shape sizes
@@ -91,3 +91,33 @@ circle.element.addEventListener("pointerup", () => {
         window.location.href = 'projects.html';
     }
 });
+// handle popup closing/opening
+// closing by X button
+document.querySelectorAll(".xbutton").forEach((xbutton) => {
+    xbutton.addEventListener("click", () => {
+        document.querySelectorAll(".popup_wrap").forEach((popup) => {
+            popup.style.visibility = "hidden";
+        });
+    });
+});
+// closing by clicking outside div
+document.querySelectorAll(".popup_wrap").forEach((popup) => {
+    popup.addEventListener("click", (event) => {
+        if (!popup.children[0].contains(event.target)) {
+            // click outside popup
+            popup.style.visibility = "hidden";
+        }
+    });
+});
+// handle opening
+function addOpeningFunction(shapeElem, popupId) {
+    shapeElem.element.addEventListener("pointerdown", () => {
+        startDragTime = Date.now();
+    });
+    shapeElem.element.addEventListener("pointerup", () => {
+        if (Date.now() - startDragTime < 200) {
+            document.getElementById(popupId).style.visibility = "visible";
+        }
+    });
+}
+addOpeningFunction(triangle, "about_popup");
