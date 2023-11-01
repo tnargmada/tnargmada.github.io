@@ -105,7 +105,7 @@ body, html {
     color: #0a183f;
 }
 
-.popup_wrap {
+/* .popup_wrap {
     position: absolute;
     top: 0;
     width: 100%;
@@ -152,7 +152,6 @@ body, html {
     margin-left: 60px;
     margin-right: 60px;
 }
-/* X button */
 .xbutton {
     position: absolute;
     right: 0px;
@@ -178,4 +177,4 @@ body, html {
     position: relative;
     height: 400px;
     margin-bottom: 50px;
-}
+} */
