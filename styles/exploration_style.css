@@ -11,6 +11,7 @@ body, html {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    background-color: #e83544;
 }
 
 #wrap {
@@ -30,6 +31,7 @@ body, html {
     margin-left: 15px;
     margin-right: 15px;
     user-select: none;
+    color: #8c121c;
 }
 /* mid size: */
 @media only screen and (min-width: 600px) {
@@ -66,41 +68,41 @@ body, html {
 
 #eel {
     cursor: pointer;
-    background-color: #e83544;
-    color: #8c121c;
+    background-color: #8c121c;
+    color: #e83544;
 }
 #eel:hover {
-    color: #310509;
+    color: #f35e6b;
 }
 #clicks {
     cursor: pointer;
-    background-color: #e83544;
-    color: #8c121c;
+    background-color: #8c121c;
+    color: #e83544;
 }
 #clicks:hover {
-    color: #310509;
+    color: #f35e6b;
 }
 #clock {
     cursor: pointer;
-    background-color: #e83544;
-    color: #8c121c;
+    background-color: #8c121c;
+    color: #e83544;
 }
 #clock:hover {
-    color: #310509;
+    color: #f35e6b;
 }
 #tugofwar {
     cursor: pointer;
-    background-color: #e83544;
-    color: #8c121c;
+    background-color: #8c121c;
+    color: #e83544;
 }
 #tugofwar:hover {
-    color: #310509;
+    color: #f35e6b;
 }
 #back {
     cursor: pointer;
-    background-color: #356ee8;
-    color: #173587;
+    background-color: white;
+    color: black;
 }
 #back:hover {
-    color: #0a183f;
+    color: #474747;
 }
