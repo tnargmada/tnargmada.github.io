@@ -10,6 +10,10 @@ const SHAPE_MIN_WIDTH = 80;
 const SHAPE_WIDTH_SCALE = 0.2;
 // use this variable to distinguish a "drag" from a "click"
 var startDragTime;
+// use these variables for transitioning
+const ANIMATION_TIME = 500; //ms
+var transitioning = false;
+var startTransitionTime;
 // create an matter.js engine
 var engine = Matter.Engine.create();
 // get wrapper element (element which will contain shapes & walls)
@@ -48,11 +52,26 @@ Matter.Runner.run(runner, engine);
 (function render() {
     window.requestAnimationFrame(render);
     // update shapes based on engine values
-    eelSquare.updateElem();
-    clicksSquare.updateElem();
-    clockSquare.updateElem();
-    tugofwarSquare.updateElem();
-    backSquare.updateElem();
+    if (!transitioning) {
+        eelSquare.updateElem();
+        clicksSquare.updateElem();
+        clockSquare.updateElem();
+        tugofwarSquare.updateElem();
+        backSquare.updateElem();
+    } else {
+        var timeElapsed = Date.now() - startTransitionTime;
+        if (timeElapsed >= ANIMATION_TIME) {
+            window.location.href = '/';
+        } else {
+            var orig_size = 0.7 * (SHAPE_MIN_WIDTH + SHAPE_WIDTH_SCALE * wrapper.clientWidth);
+            var max_size = Math.max(wrapper.clientHeight * 3, wrapper.clientWidth * 3);
+            size = orig_size + (timeElapsed / ANIMATION_TIME) * (timeElapsed / ANIMATION_TIME) * (max_size - orig_size);
+            backSquare.element.style.width = `${size}px`;
+            backSquare.element.style.height = `${size}px`;
+            backSquare.element.style.marginLeft = `${-1 * (size - orig_size) / 2}px`
+            backSquare.element.style.marginTop = `${-1 * (size - orig_size) / 2}px`
+        }
+    }
 })();
 
 // handle resize (change shape and walls to match new window size)
@@ -74,7 +93,10 @@ backSquare.element.addEventListener("pointerdown", () => {
 });
 backSquare.element.addEventListener("pointerup", () => {
     if (Date.now() - startDragTime < 200) {
-        window.location.href = 'index.html';
+        transitioning = true;
+        startTransitionTime = Date.now();
+        backSquare.element.style.zIndex = "1";
+        backSquare.element.firstElementChild.style.visibility = "hidden";
     }
 });
 // handle popup closing/opening

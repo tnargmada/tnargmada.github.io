@@ -10,6 +10,10 @@ const SHAPE_MIN_WIDTH = 100;
 const SHAPE_WIDTH_SCALE = 0.2;
 // use this variable to distinguish a "drag" from a "click"
 var startDragTime;
+// use these variables for transitioning
+const ANIMATION_TIME = 500; //ms
+var transitioning = false;
+var startTransitionTime;
 // create an matter.js engine
 var engine = Matter.Engine.create();
 // get wrapper element (element which will contain shapes & walls)
@@ -50,12 +54,27 @@ Matter.Runner.run(runner, engine);
 (function render() {
     window.requestAnimationFrame(render);
     // update shapes based on engine values
-    cornCatcherCircle.updateElem();
-    scottyReportsCircle.updateElem();
-    favoriteFoodsCircle.updateElem();
-    portfolioCircle.updateElem();
-    finulatorCircle.updateElem();
-    backCircle.updateElem();
+    if (!transitioning) {
+        cornCatcherCircle.updateElem();
+        scottyReportsCircle.updateElem();
+        favoriteFoodsCircle.updateElem();
+        portfolioCircle.updateElem();
+        finulatorCircle.updateElem();
+        backCircle.updateElem();
+    } else {
+        var timeElapsed = Date.now() - startTransitionTime;
+        if (timeElapsed >= ANIMATION_TIME) {
+            window.location.href = '/';
+        } else {
+            var orig_size = 0.75 * (SHAPE_MIN_WIDTH + SHAPE_WIDTH_SCALE * wrapper.clientWidth);
+            var max_size = Math.max(wrapper.clientHeight * 3, wrapper.clientWidth * 3);
+            size = orig_size + (timeElapsed / ANIMATION_TIME) * (timeElapsed / ANIMATION_TIME) * (max_size - orig_size);
+            backCircle.element.style.width = `${size}px`;
+            backCircle.element.style.height = `${size}px`;
+            backCircle.element.style.marginLeft = `${-1 * (size - orig_size) / 2}px`
+            backCircle.element.style.marginTop = `${-1 * (size - orig_size) / 2}px`
+        }
+    }
 })();
 
 // handle resize (change shape and walls to match new window size)
@@ -78,7 +97,10 @@ backCircle.element.addEventListener("pointerdown", () => {
 });
 backCircle.element.addEventListener("pointerup", () => {
     if (Date.now() - startDragTime < 200) {
-        window.location.href = 'index.html';
+        transitioning = true;
+        startTransitionTime = Date.now();
+        backCircle.element.style.zIndex = "1";
+        backCircle.element.firstElementChild.style.visibility = "hidden";
     }
 });
 // handle popup closing/opening

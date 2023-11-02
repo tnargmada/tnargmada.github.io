@@ -10,6 +10,10 @@ const SHAPE_MIN_WIDTH = 100;
 const SHAPE_WIDTH_SCALE = 0.25;
 // use this variable to distinguish a "drag" from a "click"
 var startDragTime;
+// use these variables for transitioning
+const ANIMATION_TIME = 500;
+var transitioning = null;
+var startTransitionTime;
 // create an matter.js engine
 var engine = Matter.Engine.create();
 // get wrapper element (element which will contain shapes & walls)
@@ -58,9 +62,29 @@ Matter.Runner.run(runner, engine);
 (function render() {
     window.requestAnimationFrame(render);
     // update shapes based on engine values
-    square.updateElem();
-    circle.updateElem();
-    triangle.updateElem();
+    if (!transitioning) {
+        square.updateElem();
+        circle.updateElem();
+        triangle.updateElem();
+    } else {
+        var timeElapsed = Date.now() - startTransitionTime;
+        if (timeElapsed >= ANIMATION_TIME) {
+            if (transitioning == "square") {
+                window.location.href = 'exploration.html';
+            } else if (transitioning == "circle") {
+                window.location.href = 'projects.html';
+            }
+        } else {
+            var orig_size = SHAPE_MIN_WIDTH + SHAPE_WIDTH_SCALE * wrapper.clientWidth;
+            var max_size = Math.max(wrapper.clientHeight * 3, wrapper.clientWidth * 3);
+            size = orig_size + (timeElapsed / ANIMATION_TIME) * (timeElapsed / ANIMATION_TIME) * (max_size - orig_size);
+            var shape_elem = document.getElementById(transitioning);
+            shape_elem.style.width = `${size}px`;
+            shape_elem.style.height = `${size}px`;
+            shape_elem.style.marginLeft = `${-1 * (size - orig_size) / 2}px`
+            shape_elem.style.marginTop = `${-1 * (size - orig_size) / 2}px`
+        }
+    }
 })();
 
 // handle resize (change shape and walls to match new window size)
@@ -83,12 +107,18 @@ circle.element.addEventListener("pointerdown", () => {
 });
 square.element.addEventListener("pointerup", () => {
     if (Date.now() - startDragTime < 200) {
-        window.location.href = 'exploration.html';
+        transitioning = "square";
+        startTransitionTime = Date.now();
+        square.element.style.zIndex = "1";
+        square.element.firstElementChild.style.visibility = "hidden";
     }
 });
 circle.element.addEventListener("pointerup", () => {
     if (Date.now() - startDragTime < 200) {
-        window.location.href = 'projects.html';
+        transitioning = "circle";
+        startTransitionTime = Date.now();
+        circle.element.style.zIndex = "1";
+        circle.element.firstElementChild.style.visibility = "hidden";
     }
 });
 // handle popup closing/opening
