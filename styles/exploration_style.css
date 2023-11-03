@@ -60,6 +60,7 @@ body, html {
     font-family: MyHelvetica, sans-serif;
     user-select: none;
     -webkit-user-select: none;
+    text-align: center;
     position: absolute;
     margin: 0px;
     left: 50%;
