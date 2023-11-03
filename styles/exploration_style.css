@@ -59,6 +59,7 @@ body, html {
 .shape_text {
     font-family: MyHelvetica, sans-serif;
     user-select: none;
+    -webkit-user-select: none;
     position: absolute;
     margin: 0px;
     left: 50%;
