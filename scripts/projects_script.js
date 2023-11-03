@@ -64,7 +64,7 @@ Matter.Runner.run(runner, engine);
     } else {
         var timeElapsed = Date.now() - startTransitionTime;
         if (timeElapsed >= ANIMATION_TIME) {
-            window.location.href = '..';
+            window.location.href = 'index.html';
         } else {
             var orig_size = 0.75 * (SHAPE_MIN_WIDTH + SHAPE_WIDTH_SCALE * wrapper.clientWidth);
             var max_size = Math.max(wrapper.clientHeight * 3, wrapper.clientWidth * 3);
