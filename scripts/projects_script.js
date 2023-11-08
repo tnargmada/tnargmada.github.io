@@ -10,10 +10,9 @@ const SHAPE_MIN_WIDTH = 100;
 const SHAPE_WIDTH_SCALE = 0.2;
 // use this variable to distinguish a "drag" from a "click"
 var startDragTime;
-// use these variables for transitioning
+// use these variable for transitioning
 const ANIMATION_TIME = 500; //ms
-var transitioning = false;
-var startTransitionTime;
+const MS_PER_FRAME = 15;
 // create an matter.js engine
 var engine = Matter.Engine.create();
 // get wrapper element (element which will contain shapes & walls)
@@ -38,7 +37,6 @@ function randomY() {
 var cornCatcherCircle = new Circle(document.getElementById("corn_catcher"), wrapper, SHAPE_MIN_WIDTH, SHAPE_WIDTH_SCALE, engine, randomX(), randomY());
 var scottyReportsCircle = new Circle(document.getElementById("scotty_reports"), wrapper, SHAPE_MIN_WIDTH, SHAPE_WIDTH_SCALE, engine, randomX(), randomY());
 var favoriteFoodsCircle = new Circle(document.getElementById("favorite_foods"), wrapper, SHAPE_MIN_WIDTH, SHAPE_WIDTH_SCALE, engine, randomX(), randomY());
-var portfolioCircle = new Circle(document.getElementById("portfolio_site"), wrapper, SHAPE_MIN_WIDTH, SHAPE_WIDTH_SCALE, engine, randomX(), randomY());
 var finulatorCircle = new Circle(document.getElementById("finulator"), wrapper, SHAPE_MIN_WIDTH, SHAPE_WIDTH_SCALE, engine, randomX(), randomY());
 var backCircle = new Circle(document.getElementById("back"), wrapper, SHAPE_MIN_WIDTH * 0.75, SHAPE_WIDTH_SCALE * 0.75, engine, wrapper.clientWidth / 4, wrapper.clientHeight / -2);
 // create walls
@@ -54,26 +52,12 @@ Matter.Runner.run(runner, engine);
 (function render() {
     window.requestAnimationFrame(render);
     // update shapes based on engine values
-    if (!transitioning) {
+    if (runner.enabled) {
         cornCatcherCircle.updateElem();
         scottyReportsCircle.updateElem();
         favoriteFoodsCircle.updateElem();
-        portfolioCircle.updateElem();
         finulatorCircle.updateElem();
         backCircle.updateElem();
-    } else {
-        var timeElapsed = Date.now() - startTransitionTime;
-        if (timeElapsed >= ANIMATION_TIME) {
-            window.location.href = 'index.html';
-        } else {
-            var orig_size = 0.75 * (SHAPE_MIN_WIDTH + SHAPE_WIDTH_SCALE * wrapper.clientWidth);
-            var max_size = Math.max(wrapper.clientHeight * 3, wrapper.clientWidth * 3);
-            size = orig_size + (timeElapsed / ANIMATION_TIME) * (timeElapsed / ANIMATION_TIME) * (max_size - orig_size);
-            backCircle.element.style.width = `${size}px`;
-            backCircle.element.style.height = `${size}px`;
-            backCircle.element.style.marginLeft = `${-1 * (size - orig_size) / 2}px`
-            backCircle.element.style.marginTop = `${-1 * (size - orig_size) / 2}px`
-        }
     }
 })();
 
@@ -84,56 +68,90 @@ function handleResize() {
     cornCatcherCircle.handleResize();
     scottyReportsCircle.handleResize();
     favoriteFoodsCircle.handleResize();
-    portfolioCircle.handleResize();
     finulatorCircle.handleResize();
     backCircle.handleResize();
     walls.handleResize(widthRatio);
 }
 window.addEventListener("resize", handleResize);
 
-// handle navigation to the other pages (if click, not drag, then navigate)
-backCircle.element.addEventListener("pointerdown", () => {
-    startDragTime = Date.now();
-});
-backCircle.element.addEventListener("pointerup", () => {
-    if (Date.now() - startDragTime < 200) {
-        transitioning = true;
-        startTransitionTime = Date.now();
-        backCircle.element.style.zIndex = "1";
-        backCircle.element.firstElementChild.style.visibility = "hidden";
-    }
-});
-// handle popup closing/opening
-// closing by X button
-document.querySelectorAll(".xbutton").forEach((xbutton) => {
-    xbutton.addEventListener("click", () => {
-        document.querySelectorAll(".popup_wrap").forEach((popup) => {
-            popup.style.visibility = "hidden";
-        });
-    });
-});
-// closing by clicking outside div
-document.querySelectorAll(".popup_wrap").forEach((popup) => {
-    popup.addEventListener("click", (event) => {
-        if (!popup.children[0].contains(event.target)) {
-            // click outside popup
-            popup.style.visibility = "hidden";
+// handle navigating (opening projects & going back)
+function animate(shape, startTime, isReverse, clearFunction) {
+    var timeElapsed = Date.now() - startTime;
+    if (timeElapsed >= ANIMATION_TIME) {
+        if (isReverse) {
+            shape.element.style.marginLeft = "auto";
+            shape.element.style.marginTop = "auto";
         }
-    });
-});
-// handle opening
-function addOpeningFunction(shapeElem, popupId) {
-    shapeElem.element.addEventListener("pointerdown", () => {
-        startDragTime = Date.now();
-    });
-    shapeElem.element.addEventListener("pointerup", () => {
-        if (Date.now() - startDragTime < 200) {
+        clearFunction();
+    } else {
+        var orig_size = SHAPE_MIN_WIDTH + SHAPE_WIDTH_SCALE * wrapper.clientWidth;
+        if (shape == backCircle) {
+            orig_size *= 0.75;
+        }
+        var max_size = Math.max(wrapper.clientHeight * 3, wrapper.clientWidth * 3);
+        scaleFactor = (timeElapsed / ANIMATION_TIME) * (timeElapsed / ANIMATION_TIME);
+        if (isReverse) {
+            scaleFactor = 1 - Math.sqrt(Math.sqrt(scaleFactor));
+        }
+        size = orig_size + scaleFactor * (max_size - orig_size);
+        shape.element.style.width = `${size}px`;
+        shape.element.style.height = `${size}px`;
+        shape.element.style.marginLeft = `${-1 * (size - orig_size) / 2}px`
+        shape.element.style.marginTop = `${-1 * (size - orig_size) / 2}px`
+    }
+}
+function navigate(shape, popupId) {
+    // stop physics
+    runner.enabled = false;
+    // remove child (text) and put in front
+    shape.element.style.zIndex = "1";
+    shape.element.firstElementChild.style.visibility = "hidden";
+    // animate (and define what to do when done animating)
+    var interval = setInterval(animate, MS_PER_FRAME, shape, Date.now(), false, () => {
+        clearInterval(interval);
+        if (shape == backCircle) {
+            window.location.href = "index.html";
+        } else {
+            // make popup visible
             document.getElementById(popupId).style.visibility = "visible";
         }
     });
 }
-addOpeningFunction(cornCatcherCircle, "corn_popup");
-addOpeningFunction(scottyReportsCircle, "scotty_popup");
-addOpeningFunction(favoriteFoodsCircle, "foods_popup");
-addOpeningFunction(portfolioCircle, "portfolio_popup");
-addOpeningFunction(finulatorCircle, "finulator_popup");
+function goBack(shape, popupId) {
+    // remove popup
+    document.getElementById(popupId).style.visibility = "hidden";
+    // animate (and define what to do when done animating)
+    interval = setInterval(animate, MS_PER_FRAME, shape, Date.now(), true, () => {
+        clearInterval(interval);
+        // start physics
+        runner.enabled = true;
+        // add child (text) back again, and move element back from the front
+        shape.element.style.zIndex = "auto";
+        shape.element.firstElementChild.style.visibility = "visible";
+    })
+}
+function addNavigateFunction(shape, popupId) {
+    shape.element.addEventListener("pointerdown", () => {
+        startDragTime = Date.now();
+    });
+    shape.element.addEventListener("pointerup", () => {
+        if (Date.now() - startDragTime < 200) {
+            navigate(shape, popupId);
+        }
+    });
+}
+function addGoBackFunction(shape, popupId) {
+    var popupElem = document.getElementById(popupId);
+    popupElem.querySelector(".back").addEventListener("click", () => {
+        goBack(shape, popupId);
+    });
+}
+addNavigateFunction(backCircle, null);
+addNavigateFunction(cornCatcherCircle, "corn_popup");
+addNavigateFunction(scottyReportsCircle, "scotty_popup");
+addNavigateFunction(favoriteFoodsCircle, "foods_popup");
+addNavigateFunction(finulatorCircle, "finulator_popup");
+addGoBackFunction(cornCatcherCircle, "corn_popup");
+addGoBackFunction(scottyReportsCircle, "scotty_popup");
+addGoBackFunction(favoriteFoodsCircle, "foods_popup");
+addGoBackFunction(finulatorCircle, "finulator_popup");

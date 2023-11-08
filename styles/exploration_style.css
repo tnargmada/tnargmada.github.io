@@ -31,7 +31,7 @@ body, html {
     margin-left: 15px;
     margin-right: 15px;
     user-select: none;
-    color: #8c121c;
+    color: #90011b;
 }
 /* mid size: */
 @media only screen and (min-width: 600px) {
@@ -70,35 +70,35 @@ body, html {
 
 #eel {
     cursor: pointer;
-    background-color: #8c121c;
+    background-color: #90011b;
     color: #e83544;
 }
 #eel:hover {
-    color: #f35e6b;
+    color: #ff5e64;
 }
 #clicks {
     cursor: pointer;
-    background-color: #8c121c;
+    background-color: #90011b;
     color: #e83544;
 }
 #clicks:hover {
-    color: #f35e6b;
+    color: #ff5e64;
 }
 #clock {
     cursor: pointer;
-    background-color: #8c121c;
+    background-color: #90011b;
     color: #e83544;
 }
 #clock:hover {
-    color: #f35e6b;
+    color: #ff5e64;
 }
 #tugofwar {
     cursor: pointer;
-    background-color: #8c121c;
+    background-color: #90011b;
     color: #e83544;
 }
 #tugofwar:hover {
-    color: #f35e6b;
+    color: #ff5e64;
 }
 #back {
     cursor: pointer;
