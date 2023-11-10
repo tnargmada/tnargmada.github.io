@@ -10,7 +10,7 @@ const SHAPE_MIN_WIDTH = 100;
 const SHAPE_WIDTH_SCALE = 0.2;
 // use this variable to distinguish a "drag" from a "click"
 var startDragTime;
-// use these variable for transitioning
+// use these variables for transitioning
 const ANIMATION_TIME = 500; //ms
 const MS_PER_FRAME = 15;
 // create an matter.js engine

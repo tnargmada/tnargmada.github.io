@@ -12,8 +12,7 @@ const SHAPE_WIDTH_SCALE = 0.2;
 var startDragTime;
 // use these variables for transitioning
 const ANIMATION_TIME = 500; //ms
-var transitioning = false;
-var startTransitionTime;
+const MS_PER_FRAME = 15;
 // create an matter.js engine
 var engine = Matter.Engine.create();
 // get wrapper element (element which will contain shapes & walls)
@@ -52,25 +51,12 @@ Matter.Runner.run(runner, engine);
 (function render() {
     window.requestAnimationFrame(render);
     // update shapes based on engine values
-    if (!transitioning) {
+    if (runner.enabled) {
         eelSquare.updateElem();
         clicksSquare.updateElem();
         clockSquare.updateElem();
         tugofwarSquare.updateElem();
         backSquare.updateElem();
-    } else {
-        var timeElapsed = Date.now() - startTransitionTime;
-        if (timeElapsed >= ANIMATION_TIME) {
-            window.location.href = 'index.html';
-        } else {
-            var orig_size = 0.7 * (SHAPE_MIN_WIDTH + SHAPE_WIDTH_SCALE * wrapper.clientWidth);
-            var max_size = Math.max(wrapper.clientHeight * 3, wrapper.clientWidth * 3);
-            size = orig_size + (timeElapsed / ANIMATION_TIME) * (timeElapsed / ANIMATION_TIME) * (max_size - orig_size);
-            backSquare.element.style.width = `${size}px`;
-            backSquare.element.style.height = `${size}px`;
-            backSquare.element.style.marginLeft = `${-1 * (size - orig_size) / 2}px`
-            backSquare.element.style.marginTop = `${-1 * (size - orig_size) / 2}px`
-        }
     }
 })();
 
@@ -88,47 +74,83 @@ function handleResize() {
 window.addEventListener("resize", handleResize);
 
 // handle navigation to the other pages (if click, not drag, then navigate)
-backSquare.element.addEventListener("pointerdown", () => {
-    startDragTime = Date.now();
-});
-backSquare.element.addEventListener("pointerup", () => {
-    if (Date.now() - startDragTime < 200) {
-        transitioning = true;
-        startTransitionTime = Date.now();
-        backSquare.element.style.zIndex = "1";
-        backSquare.element.firstElementChild.style.visibility = "hidden";
-    }
-});
-// handle popup closing/opening
-// closing by X button
-document.querySelectorAll(".xbutton").forEach((xbutton) => {
-    xbutton.addEventListener("click", () => {
-        document.querySelectorAll(".popup_wrap").forEach((popup) => {
-            popup.style.visibility = "hidden";
-        });
-    });
-});
-// closing by clicking outside div
-document.querySelectorAll(".popup_wrap").forEach((popup) => {
-    popup.addEventListener("click", (event) => {
-        if (!popup.children[0].contains(event.target)) {
-            // click outside popup
-            popup.style.visibility = "hidden";
+function animate(shape, startTime, isReverse, clearFunction) {
+    var timeElapsed = Date.now() - startTime;
+    if (timeElapsed >= ANIMATION_TIME) {
+        if (isReverse) {
+            shape.element.style.marginLeft = "auto";
+            shape.element.style.marginTop = "auto";
         }
-    });
-});
-// handle opening
-function addOpeningFunction(shapeElem, popupId) {
-    shapeElem.element.addEventListener("pointerdown", () => {
-        startDragTime = Date.now();
-    });
-    shapeElem.element.addEventListener("pointerup", () => {
-        if (Date.now() - startDragTime < 200) {
+        clearFunction();
+    } else {
+        var orig_size = SHAPE_MIN_WIDTH + SHAPE_WIDTH_SCALE * wrapper.clientWidth;
+        if (shape == backSquare) {
+            orig_size *= 0.7;
+        }
+        var max_size = Math.max(wrapper.clientHeight * 3, wrapper.clientWidth * 3);
+        scaleFactor = (timeElapsed / ANIMATION_TIME) * (timeElapsed / ANIMATION_TIME);
+        if (isReverse) {
+            scaleFactor = 1 - Math.sqrt(Math.sqrt(scaleFactor));
+        }
+        size = orig_size + scaleFactor * (max_size - orig_size);
+        shape.element.style.width = `${size}px`;
+        shape.element.style.height = `${size}px`;
+        shape.element.style.marginLeft = `${-1 * (size - orig_size) / 2}px`
+        shape.element.style.marginTop = `${-1 * (size - orig_size) / 2}px`
+    }
+}
+function navigate(shape, popupId) {
+    // stop physics
+    runner.enabled = false;
+    // remove child (text) and put in front
+    shape.element.style.zIndex = "1";
+    shape.element.firstElementChild.style.visibility = "hidden";
+    // animate (and define what to do when done animating)
+    var interval = setInterval(animate, MS_PER_FRAME, shape, Date.now(), false, () => {
+        clearInterval(interval);
+        if (shape == backSquare) {
+            window.location.href = "index.html";
+        } else {
+            // make popup visible
             document.getElementById(popupId).style.visibility = "visible";
         }
     });
 }
-addOpeningFunction(eelSquare, "eel_popup");
-addOpeningFunction(clicksSquare, "clicks_popup");
-addOpeningFunction(clockSquare, "clock_popup");
-addOpeningFunction(tugofwarSquare, "tugofwar_popup");
+function goBack(shape, popupId) {
+    // remove popup
+    document.getElementById(popupId).style.visibility = "hidden";
+    // animate (and define what to do when done animating)
+    interval = setInterval(animate, MS_PER_FRAME, shape, Date.now(), true, () => {
+        clearInterval(interval);
+        // start physics
+        runner.enabled = true;
+        // add child (text) back again, and move element back from the front
+        shape.element.style.zIndex = "auto";
+        shape.element.firstElementChild.style.visibility = "visible";
+    })
+}
+function addNavigateFunction(shape, popupId) {
+    shape.element.addEventListener("pointerdown", () => {
+        startDragTime = Date.now();
+    });
+    shape.element.addEventListener("pointerup", () => {
+        if (Date.now() - startDragTime < 200) {
+            navigate(shape, popupId);
+        }
+    });
+}
+function addGoBackFunction(shape, popupId) {
+    var popupElem = document.getElementById(popupId);
+    popupElem.querySelector(".back").addEventListener("click", () => {
+        goBack(shape, popupId);
+    });
+}
+addNavigateFunction(backSquare, null);
+addNavigateFunction(eelSquare, "eel_popup");
+addNavigateFunction(clicksSquare, "clicks_popup");
+addNavigateFunction(clockSquare, "clock_popup");
+addNavigateFunction(tugofwarSquare, "tugofwar_popup");
+addGoBackFunction(eelSquare, "eel_popup");
+addGoBackFunction(clicksSquare, "clicks_popup");
+addGoBackFunction(clockSquare, "clock_popup");
+addGoBackFunction(tugofwarSquare, "tugofwar_popup");

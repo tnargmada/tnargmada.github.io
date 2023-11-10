@@ -11,9 +11,8 @@ const SHAPE_WIDTH_SCALE = 0.25;
 // use this variable to distinguish a "drag" from a "click"
 var startDragTime;
 // use these variables for transitioning
-const ANIMATION_TIME = 500;
-var transitioning = null;
-var startTransitionTime;
+const ANIMATION_TIME = 500; //ms
+const MS_PER_FRAME = 15;
 // create an matter.js engine
 var engine = Matter.Engine.create();
 // get wrapper element (element which will contain shapes & walls)
@@ -62,28 +61,10 @@ Matter.Runner.run(runner, engine);
 (function render() {
     window.requestAnimationFrame(render);
     // update shapes based on engine values
-    if (!transitioning) {
+    if (runner.enabled) {
         square.updateElem();
         circle.updateElem();
         triangle.updateElem();
-    } else {
-        var timeElapsed = Date.now() - startTransitionTime;
-        if (timeElapsed >= ANIMATION_TIME) {
-            if (transitioning == "square") {
-                window.location.href = 'exploration.html';
-            } else if (transitioning == "circle") {
-                window.location.href = 'projects.html';
-            }
-        } else {
-            var orig_size = SHAPE_MIN_WIDTH + SHAPE_WIDTH_SCALE * wrapper.clientWidth;
-            var max_size = Math.max(wrapper.clientHeight * 3, wrapper.clientWidth * 3);
-            size = orig_size + (timeElapsed / ANIMATION_TIME) * (timeElapsed / ANIMATION_TIME) * (max_size - orig_size);
-            var shape_elem = document.getElementById(transitioning);
-            shape_elem.style.width = `${size}px`;
-            shape_elem.style.height = `${size}px`;
-            shape_elem.style.marginLeft = `${-1 * (size - orig_size) / 2}px`
-            shape_elem.style.marginTop = `${-1 * (size - orig_size) / 2}px`
-        }
     }
 })();
 
@@ -99,55 +80,77 @@ function handleResize() {
 window.addEventListener("resize", handleResize);
 
 // handle navigation to the other pages (if click, not drag, then navigate)
-square.element.addEventListener("pointerdown", () => {
-    startDragTime = Date.now();
-});
-circle.element.addEventListener("pointerdown", () => {
-    startDragTime = Date.now();
-});
-square.element.addEventListener("pointerup", () => {
-    if (Date.now() - startDragTime < 200) {
-        transitioning = "square";
-        startTransitionTime = Date.now();
-        square.element.style.zIndex = "1";
-        square.element.firstElementChild.style.visibility = "hidden";
-    }
-});
-circle.element.addEventListener("pointerup", () => {
-    if (Date.now() - startDragTime < 200) {
-        transitioning = "circle";
-        startTransitionTime = Date.now();
-        circle.element.style.zIndex = "1";
-        circle.element.firstElementChild.style.visibility = "hidden";
-    }
-});
-// handle popup closing/opening
-// closing by X button
-document.querySelectorAll(".xbutton").forEach((xbutton) => {
-    xbutton.addEventListener("click", () => {
-        document.querySelectorAll(".popup_wrap").forEach((popup) => {
-            popup.style.visibility = "hidden";
-        });
-    });
-});
-// closing by clicking outside div
-document.querySelectorAll(".popup_wrap").forEach((popup) => {
-    popup.addEventListener("click", (event) => {
-        if (!popup.children[0].contains(event.target)) {
-            // click outside popup
-            popup.style.visibility = "hidden";
+function animate(shape, startTime, isReverse, clearFunction) {
+    var timeElapsed = Date.now() - startTime;
+    if (timeElapsed >= ANIMATION_TIME) {
+        if (isReverse) {
+            shape.element.style.marginLeft = "auto";
+            shape.element.style.marginTop = "auto";
         }
-    });
-});
-// handle opening
-function addOpeningFunction(shapeElem, popupId) {
-    shapeElem.element.addEventListener("pointerdown", () => {
-        startDragTime = Date.now();
-    });
-    shapeElem.element.addEventListener("pointerup", () => {
-        if (Date.now() - startDragTime < 200) {
+        clearFunction();
+    } else {
+        var orig_size = SHAPE_MIN_WIDTH + SHAPE_WIDTH_SCALE * wrapper.clientWidth;
+        var max_size = Math.max(wrapper.clientHeight * 4, wrapper.clientWidth * 4);
+        scaleFactor = (timeElapsed / ANIMATION_TIME) * (timeElapsed / ANIMATION_TIME);
+        if (isReverse) {
+            scaleFactor = 1 - Math.sqrt(Math.sqrt(scaleFactor));
+        }
+        size = orig_size + scaleFactor * (max_size - orig_size);
+        shape.element.style.width = `${size}px`;
+        shape.element.style.height = `${size}px`;
+        shape.element.style.marginLeft = `${-1 * (size - orig_size) / 2}px`
+        shape.element.style.marginTop = `${-1 * (size - orig_size) / 2}px`
+    }
+}
+function navigate(shape, popupId) {
+    // stop physics
+    runner.enabled = false;
+    // remove text and put in front
+    shape.element.style.zIndex = "1";
+    shape.element.querySelector(".shape_text").style.visibility = "hidden";
+    // animate (and define what to do when done animating)
+    var interval = setInterval(animate, MS_PER_FRAME, shape, Date.now(), false, () => {
+        clearInterval(interval);
+        if (shape == square) {
+            window.location.href = "exploration.html";
+        } else if (shape == circle) {
+            window.location.href = "projects.html";
+        } else {
+            // make popup visible
             document.getElementById(popupId).style.visibility = "visible";
         }
     });
 }
-addOpeningFunction(triangle, "about_popup");
+function goBack(shape, popupId) {
+    // remove popup
+    document.getElementById(popupId).style.visibility = "hidden";
+    // animate (and define what to do when done animating)
+    interval = setInterval(animate, MS_PER_FRAME, shape, Date.now(), true, () => {
+        clearInterval(interval);
+        // start physics
+        runner.enabled = true;
+        // add text back again, and move element back from the front
+        shape.element.style.zIndex = "auto";
+        shape.element.querySelector(".shape_text").style.visibility = "visible";
+    })
+}
+function addNavigateFunction(shape, popupId) {
+    shape.element.addEventListener("pointerdown", () => {
+        startDragTime = Date.now();
+    });
+    shape.element.addEventListener("pointerup", () => {
+        if (Date.now() - startDragTime < 200) {
+            navigate(shape, popupId);
+        }
+    });
+}
+function addGoBackFunction(shape, popupId) {
+    var popupElem = document.getElementById(popupId);
+    popupElem.querySelector(".back").addEventListener("click", () => {
+        goBack(shape, popupId);
+    });
+}
+addNavigateFunction(square, null);
+addNavigateFunction(circle, null);
+addNavigateFunction(triangle, "about_popup");
+addGoBackFunction(triangle, "about_popup");
