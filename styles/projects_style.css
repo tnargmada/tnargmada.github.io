@@ -12,6 +12,8 @@ body, html {
     height: 100%;
     overflow: hidden;
     background-color: #356ee8;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 #wrap {
