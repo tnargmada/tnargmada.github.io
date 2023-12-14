@@ -69,51 +69,68 @@ body, html {
     top: 50%;
     transform: translate(-50%, -50%);
 }
+.shape_year {
+    font-family: MyHelvetica, sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    text-align: center;
+    position: absolute;
+    margin: 0px;
+    left: 50%;
+    bottom: 8%;
+    transform: translate(-50%, 0%);
+}
 
 #corn_catcher {
     cursor: pointer;
     background-color: #173587;
     color: #356ee8;
+    visibility: hidden;
 }
-#corn_catcher:hover {
+#corn_catcher:hover .shape_text {
     color: #5e90fc;
 }
 #scotty_reports {
     cursor: pointer;
     background-color: #173587;
     color: #356ee8;
+    visibility: hidden;
 }
-#scotty_reports:hover {
+#scotty_reports:hover .shape_text {
     color: #5e90fc;
 }
 #favorite_foods {
     cursor: pointer;
     background-color: #173587;
     color: #356ee8;
+    visibility: hidden;
 }
-#favorite_foods:hover {
+#favorite_foods:hover .shape_text {
     color: #5e90fc;
 }
 #portfolio_site {
     cursor: pointer;
     background-color: #173587;
     color: #356ee8;
+    visibility: hidden;
 }
-#portfolio_site:hover {
+#portfolio_site:hover .shape_text {
     color: #5e90fc;
 }
 #finulator {
     cursor: pointer;
     background-color: #173587;
     color: #356ee8;
+    visibility: hidden;
 }
-#finulator:hover {
+#finulator:hover .shape_text {
     color: #5e90fc;
 }
 #back {
     cursor: pointer;
     background-color: white;
     color: black;
+    visibility: hidden;
 }
 #back:hover {
     color: #474747;

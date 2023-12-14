@@ -69,43 +69,59 @@ body, html {
     top: 50%;
     transform: translate(-50%, -50%);
 }
+.shape_year {
+    font-family: MyHelvetica, sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    text-align: center;
+    position: absolute;
+    margin: 0px;
+    left: 50%;
+    bottom: 8%;
+    transform: translate(-50%, 0%);
+}
 
 #eel {
     cursor: pointer;
     background-color: #90011b;
     color: #e83544;
+    visibility: hidden;
 }
-#eel:hover {
+#eel:hover .shape_text {
     color: #ff5e64;
 }
 #clicks {
     cursor: pointer;
     background-color: #90011b;
     color: #e83544;
+    visibility: hidden;
 }
-#clicks:hover {
+#clicks:hover .shape_text {
     color: #ff5e64;
 }
 #clock {
     cursor: pointer;
     background-color: #90011b;
     color: #e83544;
+    visibility: hidden;
 }
-#clock:hover {
+#clock:hover .shape_text {
     color: #ff5e64;
 }
 #tugofwar {
     cursor: pointer;
     background-color: #90011b;
     color: #e83544;
+    visibility: hidden;
 }
-#tugofwar:hover {
+#tugofwar:hover .shape_text {
     color: #ff5e64;
 }
 #back {
     cursor: pointer;
     background-color: white;
     color: black;
+    visibility: hidden;
 }
 #back:hover {
     color: #474747;

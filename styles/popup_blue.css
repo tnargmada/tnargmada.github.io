@@ -17,6 +17,14 @@
     height: 26px;
     cursor: pointer;
 }
+.forward {
+    position: absolute;
+    right: 22px;
+    top: 48px;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+}
 .popup h2 {
     font-size: 32px;
     margin-top: 40px;
@@ -100,6 +108,12 @@
         width: 35px;
         height: 35px;
     }
+    .forward {
+        right: 36px;
+        top: 52px;
+        width: 35px;
+        height: 35px;
+    }
     .popup h2 {
         font-size: 43px;
         margin-top: 42px;
@@ -148,6 +162,12 @@
 @media only screen and (min-width: 1000px) {
     .back {
         left: 60px;
+        top: 88px;
+        width: 58px;
+        height: 58px;
+    }
+    .forward {
+        right: 60px;
         top: 88px;
         width: 58px;
         height: 58px;
