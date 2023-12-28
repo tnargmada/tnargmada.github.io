@@ -93,7 +93,6 @@ window.addEventListener("resize", handleResize);
 function animate(shape, startTime, isReverse, clearFunction) {
     var timeElapsed = Date.now() - startTime;
     var orig_size = SHAPE_MIN_WIDTH + SHAPE_WIDTH_SCALE * wrapper.clientWidth;
-    console.log(orig_size);
     if (shape == backSquare) {
         orig_size *= 0.7;
     }
@@ -123,7 +122,11 @@ function navigate(shape, popupId) {
     enabled = false;
     // remove child (text) and put in front
     shape.element.style.zIndex = "1";
-    shape.element.firstElementChild.style.visibility = "hidden";
+    // shape.element.firstElementChild.style.visibility = "hidden";
+    for (var i = 0; i < shape.element.children.length; i++) {
+        var child = shape.element.children[i];
+        child.style.visibility = "hidden";
+    }
     // animate (and define what to do when done animating)
     animating = true;
     var interval = setInterval(animate, MS_PER_FRAME, shape, Date.now(), false, () => {
@@ -149,22 +152,35 @@ function goBack(shape, popupId) {
         enabled = true;
         // add child (text) back again, and move element back from the front
         shape.element.style.zIndex = "auto";
-        shape.element.firstElementChild.style.visibility = "visible";
+        // shape.element.firstElementChild.style.visibility = "visible";
+        for (var i = 0; i < shape.element.children.length; i++) {
+            var child = shape.element.children[i];
+            child.style.visibility = "visible";
+        }
     })
 }
 function goForward(shape, popupId, nextShape, nextPopupId) {
     // reset current shape & popup
     var orig_size = SHAPE_MIN_WIDTH + SHAPE_WIDTH_SCALE * wrapper.clientWidth;
     document.getElementById(popupId).style.visibility = "hidden";
+    console.log(shape.element.style.transform);
     shape.element.style.marginLeft = "auto";
     shape.element.style.marginTop = "auto";
     shape.element.style.width = `${orig_size}px`;
     shape.element.style.height = `${orig_size}px`;
     shape.element.style.zIndex = "auto";
-    shape.element.firstElementChild.style.visibility = "visible";
+    // shape.element.firstElementChild.style.visibility = "visible";
+    for (var i = 0; i < shape.element.children.length; i++) {
+        var child = shape.element.children[i];
+        child.style.visibility = "visible";
+    }
     // remove child (text) from next shape and put in front
     nextShape.element.style.zIndex = "1";
-    nextShape.element.firstElementChild.style.visibility = "hidden";
+    // nextShape.element.firstElementChild.style.visibility = "hidden";
+    for (var i = 0; i < nextShape.element.children.length; i++) {
+        var child = nextShape.element.children[i];
+        child.style.visibility = "hidden";
+    }
     // enlarge next shape & display next popup
     var size = Math.max(wrapper.clientHeight * 3, wrapper.clientWidth * 3);
     nextShape.element.style.width = `${size}px`;

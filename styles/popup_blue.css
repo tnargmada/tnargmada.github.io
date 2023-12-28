@@ -8,6 +8,7 @@
     z-index: 1;
     visibility: hidden;
     overflow-y: scroll;
+    background-color: #173587;
 }
 .back {
     position: absolute;
