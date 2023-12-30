@@ -42,12 +42,14 @@ var cornCatcherCircle = new Circle(document.getElementById("corn_catcher"), wrap
 var scottyReportsCircle = new Circle(document.getElementById("scotty_reports"), wrapper, SHAPE_MIN_WIDTH, SHAPE_WIDTH_SCALE, engine, randomX(), randomY());
 var favoriteFoodsCircle = new Circle(document.getElementById("favorite_foods"), wrapper, SHAPE_MIN_WIDTH, SHAPE_WIDTH_SCALE, engine, randomX(), randomY());
 var finulatorCircle = new Circle(document.getElementById("finulator"), wrapper, SHAPE_MIN_WIDTH, SHAPE_WIDTH_SCALE, engine, randomX(), randomY());
+var pdfCircle = new Circle(document.getElementById("pdf"), wrapper, SHAPE_MIN_WIDTH, SHAPE_WIDTH_SCALE, engine, randomX(), randomY())
 var backCircle = new Circle(document.getElementById("back"), wrapper, SHAPE_MIN_WIDTH * 0.75, SHAPE_WIDTH_SCALE * 0.75, engine, wrapper.clientWidth / 4, wrapper.clientHeight / -2);
 // make shapes visible (they're initially hidden to prevent display before positioning)
 cornCatcherCircle.element.style.visibility = "visible";
 scottyReportsCircle.element.style.visibility = "visible";
 favoriteFoodsCircle.element.style.visibility = "visible";
 finulatorCircle.element.style.visibility = "visible";
+pdfCircle.element.style.visibility = "visible";
 backCircle.element.style.visibility = "visible";
 // create walls
 var walls = new Walls(wrapper, WALL_THICKNESS, WALL_OVERLAP, WALL_HEIGHT, engine);
@@ -71,6 +73,7 @@ lastFrame = Date.now();
         scottyReportsCircle.updateElem();
         favoriteFoodsCircle.updateElem();
         finulatorCircle.updateElem();
+        pdfCircle.updateElem();
         backCircle.updateElem();
     }
     lastFrame = currentFrame;
@@ -84,6 +87,7 @@ function handleResize() {
     scottyReportsCircle.handleResize();
     favoriteFoodsCircle.handleResize();
     finulatorCircle.handleResize();
+    pdfCircle.handleResize();
     backCircle.handleResize();
     walls.handleResize(widthRatio);
 }
@@ -122,7 +126,10 @@ function navigate(shape, popupId) {
     enabled = false;
     // remove child (text) and put in front
     shape.element.style.zIndex = "1";
-    shape.element.firstElementChild.style.visibility = "hidden";
+    for (var i = 0; i < shape.element.children.length; i++) {
+        var child = shape.element.children[i];
+        child.style.visibility = "hidden";
+    }
     // animate (and define what to do when done animating)
     animating = true;
     var interval = setInterval(animate, MS_PER_FRAME, shape, Date.now(), false, () => {
@@ -148,7 +155,10 @@ function goBack(shape, popupId) {
         enabled = true;
         // add child (text) back again, and move element back from the front
         shape.element.style.zIndex = "auto";
-        shape.element.firstElementChild.style.visibility = "visible";
+        for (var i = 0; i < shape.element.children.length; i++) {
+            var child = shape.element.children[i];
+            child.style.visibility = "visible";
+        }
     })
 }
 function goForward(shape, popupId, nextShape, nextPopupId) {
@@ -160,16 +170,22 @@ function goForward(shape, popupId, nextShape, nextPopupId) {
     shape.element.style.width = `${orig_size}px`;
     shape.element.style.height = `${orig_size}px`;
     shape.element.style.zIndex = "auto";
-    shape.element.firstElementChild.style.visibility = "visible";
+    for (var i = 0; i < shape.element.children.length; i++) {
+        var child = shape.element.children[i];
+        child.style.visibility = "visible";
+    }
     // remove child (text) from next shape and put in front
-    nextShape.element.style.zIndex = "1";
-    nextShape.element.firstElementChild.style.visibility = "hidden";
-    // enlarge next shape & display next popup
+    for (var i = 0; i < nextShape.element.children.length; i++) {
+        var child = nextShape.element.children[i];
+        child.style.visibility = "hidden";
+    }
+    // enlarge next shape, put it in front & display next popup
     var size = Math.max(wrapper.clientHeight * 3, wrapper.clientWidth * 3);
     nextShape.element.style.width = `${size}px`;
     nextShape.element.style.height = `${size}px`;
     nextShape.element.style.marginLeft = `${-1 * (size - orig_size) / 2}px`
     nextShape.element.style.marginTop = `${-1 * (size - orig_size) / 2}px`
+    nextShape.element.style.zIndex = "1";
     document.getElementById(nextPopupId).style.visibility = "visible";
     return;
 }
@@ -206,11 +222,14 @@ addNavigateFunction(cornCatcherCircle, "corn_popup");
 addNavigateFunction(scottyReportsCircle, "scotty_popup");
 addNavigateFunction(favoriteFoodsCircle, "foods_popup");
 addNavigateFunction(finulatorCircle, "finulator_popup");
+addNavigateFunction(pdfCircle, "pdf_popup");
 addGoBackFunction(cornCatcherCircle, "corn_popup");
 addGoBackFunction(scottyReportsCircle, "scotty_popup");
 addGoBackFunction(favoriteFoodsCircle, "foods_popup");
 addGoBackFunction(finulatorCircle, "finulator_popup");
+addGoBackFunction(pdfCircle, "pdf_popup");
 addGoForwardFunction(finulatorCircle, "finulator_popup", scottyReportsCircle, "scotty_popup");
 addGoForwardFunction(scottyReportsCircle, "scotty_popup", favoriteFoodsCircle, "foods_popup");
 addGoForwardFunction(favoriteFoodsCircle, "foods_popup", cornCatcherCircle, "corn_popup");
-addGoForwardFunction(cornCatcherCircle, "corn_popup", finulatorCircle, "finulator_popup");
+addGoForwardFunction(cornCatcherCircle, "corn_popup", pdfCircle, "pdf_popup");
+addGoForwardFunction(pdfCircle, "pdf_popup", finulatorCircle, "finulator_popup");

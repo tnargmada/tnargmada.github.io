@@ -122,7 +122,6 @@ function navigate(shape, popupId) {
     enabled = false;
     // remove child (text) and put in front
     shape.element.style.zIndex = "1";
-    // shape.element.firstElementChild.style.visibility = "hidden";
     for (var i = 0; i < shape.element.children.length; i++) {
         var child = shape.element.children[i];
         child.style.visibility = "hidden";
@@ -152,7 +151,6 @@ function goBack(shape, popupId) {
         enabled = true;
         // add child (text) back again, and move element back from the front
         shape.element.style.zIndex = "auto";
-        // shape.element.firstElementChild.style.visibility = "visible";
         for (var i = 0; i < shape.element.children.length; i++) {
             var child = shape.element.children[i];
             child.style.visibility = "visible";
@@ -181,12 +179,13 @@ function goForward(shape, popupId, nextShape, nextPopupId) {
         var child = nextShape.element.children[i];
         child.style.visibility = "hidden";
     }
-    // enlarge next shape & display next popup
+    // enlarge next shape, put in front & display next popup
     var size = Math.max(wrapper.clientHeight * 3, wrapper.clientWidth * 3);
     nextShape.element.style.width = `${size}px`;
     nextShape.element.style.height = `${size}px`;
     nextShape.element.style.marginLeft = `${-1 * (size - orig_size) / 2}px`
     nextShape.element.style.marginTop = `${-1 * (size - orig_size) / 2}px`
+    nextShape.element.style.zIndex = "1";
     document.getElementById(nextPopupId).style.visibility = "visible";
     return;
 }

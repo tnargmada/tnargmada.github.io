@@ -126,6 +126,15 @@ body, html {
 #finulator:hover .shape_text {
     color: #5e90fc;
 }
+#pdf {
+    cursor: pointer;
+    background-color: #173587;
+    color: #356ee8;
+    visibility: hidden;
+}
+#pdf:hover .shape_text {
+    color: #5e90fc;
+}
 #back {
     cursor: pointer;
     background-color: white;
