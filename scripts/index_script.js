@@ -199,4 +199,12 @@ window.addEventListener("pageshow", () => {
     circle.element.style.height = `${orig_size}px`;
     circle.element.style.marginLeft = "0px";
     circle.element.style.marginTop = "0px";
+    // triangle reset
+    triangle.element.style.zIndex = "auto";
+    triangle.element.querySelector(".shape_text").style.visibility = "visible";
+    triangle.element.style.width = `${orig_size}px`;
+    triangle.element.style.height = `${orig_size}px`;
+    triangle.element.style.marginLeft = "0px";
+    triangle.element.style.marginTop = "0px";
+    document.getElementById("about_popup").style.visibility = "hidden";
 })
