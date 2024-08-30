@@ -1,120 +1,149 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Adam Grant</title>
-        <script src="scripts/matter.min.js"></script>
-        <link rel="stylesheet" href="styles/exploration_style.css" type="text/css">
-        <link rel="stylesheet" href="styles/popup_red.css" type="text/css">
-        <link rel="icon" type="image/x-icon" href="img/favicon.ico">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-    </head>
-    <body><h1 id="intro">EXPLORATION</h1>
-        <div id="wrap">
-            <div id="eel">
-                <p class="shape_text">Eel</p>
-                <p class="shape_year">2018</p>
-            </div>
-            <div id="clicks">
-                <p class="shape_text">How Many Clicks?</p>
-                <p class="shape_year">2022</p>
-            </div>
-            <div id="clock">
-                <p class="shape_text">Color Clock</p>
-                <p class="shape_year">2019</p>
-            </div>
-            <div id="tugofwar">
-                <p class="shape_text">Tug Of War</p>
-                <p class="shape_year">2022</p>
-            </div>
-            <div id="back">
-                <p class="shape_text">Back</p>
-            </div>
-        </div>
-        <div class="popup" id="eel_popup">
-            <img class="back" src="img/back_red.png">
-            <img class="forward" src="img/forward_red.png">
-            <h2>Eel</h2>
-            <h3>Web Game<br>2018</h3>
-            <p class="middle">
-                Eel is a 3D version of the classic Snake game. I wrote it when I was learning object-oriented programming.
-                I first wrote it in Java, using the Processing library, then rewrote it in P5JS for the web.
-            </p>
-            <div class="carousel">
-                <img class="first" src="img/eelgif.gif">
-                <img src="img/eellost.png">
-                <img src="img/snakegame.png">
-                <img src="img/eelcode.png">
-            </div>
-            <p class="last">
-                You can try the game <a target="_blank" href="https://openprocessing.org/sketch/563382">here</a>. The controls
-                can be a bit confusing at first. W & S go up and down, Q & D go along one horizontal axis, and A & E go along
-                the other.
-            </p>
-        </div>
-        <div class="popup" id="clicks_popup">
-            <img class="back" src="img/back_red.png">
-            <img class="forward" src="img/forward_red.png">
-            <h2>How Many Clicks Does It Take To Get To The Center Of A Google Popup?</h2>
-            <h3>Chrome Extension<br>2022</h3>
-            <div class="carousel">
-                <iframe class="first" id="clicks_video" src="https://player.vimeo.com/video/698803725?h=87b627a5b7" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-                <img src="img/clicksintro.png">
-                <img src="img/clickswin.png">
-            </div>
-            <p class="last">
-                This was a project to turn Google privacy settings into a puzzle game. It presents a list of steps to turn off
-                Google's personal data collection, and rewards you for doing so. Since these settings are already made
-                intentionally difficult to navigate, I decided they would make a good game if points were added. I wanted
-                to draw some attention to these design patterns, and I also used the project to learn how to create a browser
-                extension. This extension was written using plain HTML/CSS/JS (using <a href="https://www.kirilv.com/canvas-confetti/">this confetti library</a>).
-            </p>
-        </div>
-        <div class="popup" id="clock_popup">
-            <img class="back" src="img/back_red.png">
-            <img class="forward" src="img/forward_red.png">
-            <h2>Color Clock</h2>
-            <h3>Web Animation<br>2019</h3>
-            <p>
-                I made a clock that mapped hours, minutes, and seconds onto red, green, blue values to create a color. It also shows
-                the month, day, and year by the number of grey rectangles in the background.
-            </p>
-            <div class="carousel">
-                <img class="first" src="img/clockslow.gif">
-                <img src="img/clockmedium.gif">
-                <img src="img/clockiteration1.png">
-                <img src="img/clockiteration3.png">
-                <img src="img/clockinspo1.jpg">
-                <img src="img/clockinspo2.png">
-            </div>
-            <p class="last">
-                I made this as an assignment in a class called Computation for Creative Practice, taught by Golan Levin. Above you
-                can see the final design in real-time, and in 5x speed. You can also see a couple other iterations, and some of my
-                inspiration (Bauhaus color studies). This design was created using P5JS.
-            </p>
-        </div>
-        <div class="popup" id="tugofwar_popup">
-            <img class="back" src="img/back_red.png">
-            <img class="forward" src="img/forward_red.png">
-            <h2>Computer Tower Tug Of War</h2>
-            <h3>Interactive Sculpture<br>2022</h3>
-            <p class="middle">
-                I created a computer that played tug of war with you when you tried to plug it in.
-            </p>
-            <div class="carousel">
-                <img class="first" src="img/tugofwar.gif">
-                <img src="img/tugofwarinnards.png">
-                <img src="img/tugdiagram1.png">
-                <img src="img/tugdiagram2.png">
-            </div>
-            <p class="last">
-                I wanted to explore tangible interfaces, and alternative ways of interacting with a computer. I went through a few
-                iterations of the idea; at one point I wanted to have a remote arm-wrestle experience to settle internet arguments.
-                In the end, it was simpler to make it a one-person experience, so I decided person versus computer was best. I used
-                a force sensor and a strong motor to simulate the tug-of-war experience, and an Arduino to control the experience.
-            </p>
-        </div>
-        <script src="scripts/walls.js"></script>
-        <script src="scripts/shapes.js"></script>
-        <script src="scripts/exploration_script.js"></script>
-    </body>
+  <head>
+    <title>Adam Grant</title>
+    <script src="scripts/matter.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="styles/exploration_style.css"
+      type="text/css"
+    />
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <h1 id="intro">EXPLORATION</h1>
+    <div id="wrap">
+      <div id="eel">
+        <p class="shape_text">Eel</p>
+        <p class="shape_year">2018</p>
+      </div>
+      <div id="clicks">
+        <p class="shape_text">How Many Clicks?</p>
+        <p class="shape_year">2022</p>
+      </div>
+      <div id="clock">
+        <p class="shape_text">Color Clock</p>
+        <p class="shape_year">2019</p>
+      </div>
+      <div id="tugofwar">
+        <p class="shape_text">Tug Of War</p>
+        <p class="shape_year">2022</p>
+      </div>
+      <div id="back">
+        <p class="shape_text">Back</p>
+      </div>
+    </div>
+    <div class="popup" id="eel_popup">
+      <img class="back" src="img/back_red.png" />
+      <img class="forward" src="img/forward_red.png" />
+      <h2>Eel</h2>
+      <h3>Web Game<br />2018</h3>
+      <p class="middle">
+        Eel is a 3D version of the classic Snake game. I wrote it when I was
+        learning object-oriented programming. I first wrote it in Java, using
+        the Processing library, then rewrote it in P5JS for the web.
+      </p>
+      <div class="carousel">
+        <img class="first" src="img/eelgif.gif" />
+        <img src="img/eellost.png" />
+        <img src="img/snakegame.png" />
+        <img src="img/eelcode.png" />
+      </div>
+      <p class="last">
+        You can try the game
+        <a target="_blank" href="https://openprocessing.org/sketch/563382"
+          >here</a
+        >. The controls can be a bit confusing at first. W & S go up and down, Q
+        & D go along one horizontal axis, and A & E go along the other.
+      </p>
+    </div>
+    <div class="popup" id="clicks_popup">
+      <img class="back" src="img/back_red.png" />
+      <img class="forward" src="img/forward_red.png" />
+      <h2>
+        How Many Clicks Does It Take To Get To The Center Of A Google Popup?
+      </h2>
+      <h3>Chrome Extension<br />2022</h3>
+      <div class="carousel">
+        <iframe
+          class="first"
+          id="clicks_video"
+          src="https://player.vimeo.com/video/698803725?h=87b627a5b7"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+        <img src="img/clicksintro.png" />
+        <img src="img/clickswin.png" />
+      </div>
+      <p class="last">
+        This was a project to turn Google privacy settings into a puzzle game.
+        It presents a list of steps to turn off Google's personal data
+        collection, and rewards you for doing so. Since these settings are
+        already made intentionally difficult to navigate, I decided they would
+        make a good game if points were added. I wanted to draw some attention
+        to these design patterns, and I also used the project to learn how to
+        create a browser extension. This extension was written using plain
+        HTML/CSS/JS (using
+        <a href="https://www.kirilv.com/canvas-confetti/"
+          >this confetti library</a
+        >).
+      </p>
+    </div>
+    <div class="popup" id="clock_popup">
+      <img class="back" src="img/back_red.png" />
+      <img class="forward" src="img/forward_red.png" />
+      <h2>Color Clock</h2>
+      <h3>Web Animation<br />2019</h3>
+      <p>
+        I made a clock that mapped hours, minutes, and seconds onto red, green,
+        blue values to create a color. It also shows the month, day, and year by
+        the number of grey rectangles in the background.
+      </p>
+      <div class="carousel">
+        <img class="first" src="img/clockslow.gif" />
+        <img src="img/clockmedium.gif" />
+        <img src="img/clockiteration1.png" />
+        <img src="img/clockiteration3.png" />
+        <img src="img/clockinspo1.jpg" />
+        <img src="img/clockinspo2.png" />
+      </div>
+      <p class="last">
+        I made this as an assignment in a class called Computation for Creative
+        Practice, taught by Golan Levin. Above you can see the final design in
+        real-time, and in 5x speed. You can also see a couple other iterations,
+        and some of my inspiration (Bauhaus color studies). This design was
+        created using P5JS.
+      </p>
+    </div>
+    <div class="popup" id="tugofwar_popup">
+      <img class="back" src="img/back_red.png" />
+      <img class="forward" src="img/forward_red.png" />
+      <h2>Computer Tower Tug Of War</h2>
+      <h3>Interactive Sculpture<br />2022</h3>
+      <p class="middle">
+        I created a computer that played tug of war with you when you tried to
+        plug it in.
+      </p>
+      <div class="carousel">
+        <img class="first" src="img/tugofwar.gif" />
+        <img src="img/tugofwarinnards.png" />
+        <img src="img/tugdiagram1.png" />
+        <img src="img/tugdiagram2.png" />
+      </div>
+      <p class="last">
+        I wanted to explore tangible interfaces, and alternative ways of
+        interacting with a computer. I went through a few iterations of the
+        idea; at one point I wanted to have a remote arm-wrestle experience to
+        settle internet arguments. In the end, it was simpler to make it a
+        one-person experience, so I decided person versus computer was best. I
+        used a force sensor and a strong motor to simulate the tug-of-war
+        experience, and an Arduino to control the experience.
+      </p>
+    </div>
+    <script src="scripts/walls.js"></script>
+    <script src="scripts/shapes.js"></script>
+    <script src="scripts/exploration_script.js"></script>
+  </body>
 </html>
